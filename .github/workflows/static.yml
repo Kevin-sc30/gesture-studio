@@ -1,0 +1,44 @@
+name: Publish Gesture Studio
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7.0.1
+      - name: Configure Pages
+        uses: actions/configure-pages@v6.0.0
+      - name: Prepare and verify static website
+        run: |
+          mkdir -p _site
+          cp index.html style.css app.js effects.js gestures.js .nojekyll _site/
+          cp -a assets _site/assets
+          test -s _site/index.html
+          test -s _site/assets/gesture_recognizer.task
+          test -s _site/assets/wasm/vision_wasm_internal.wasm
+          test -s _site/assets/wasm/vision_wasm_nosimd_internal.wasm
+          node --check _site/app.js
+          node --check _site/effects.js
+          node --check _site/gestures.js
+      - name: Upload static website
+        uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: _site
+          include-hidden-files: true
+      - name: Publish website
+        id: deployment
+        uses: actions/deploy-pages@v5.0.1
