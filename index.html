@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f4f5f0">
+  <meta name="description" content="打开摄像头，让手势变成爱心、气球和烟花。在浏览器本地运行的实时手势互动体验。">
+  <title>手势放映室 · Gesture Studio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%232a342e'/%3E%3Cpath d='M32 47C4 30 22 14 32 25C42 14 60 30 32 47' fill='%23d6f2a6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-camera" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="m16 10 5-3v10l-5-3"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"/><path d="m20 2 .8 2.2L23 5l-2.2.8L20 8l-.8-2.2L17 5l2.2-.8Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6Z"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></symbol>
+    <symbol id="i-mirror" viewBox="0 0 24 24"><path d="M12 3v18M3 18V6l6 12Zm18 0V6l-6 12Z"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V6a1.5 1.5 0 0 1 3 0v6-8a1.5 1.5 0 0 1 3 0v8-6a1.5 1.5 0 0 1 3 0v7-3a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-13 3l-3-5a1.5 1.5 0 0 1 2-2Z"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5Zm4 4a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-capture" viewBox="0 0 24 24"><path d="M8 5 9 3h6l1 2h4a1 1 0 0 1 1 1v13H3V6a1 1 0 0 1 1-1Z"/><circle cx="12" cy="12" r="4"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></symbol>
+  </defs></svg>
+  <div class="page-shell">
+    <header class="header">
+      <a class="brand" href="./" aria-label="手势放映室首页"><span class="brand-mark"><svg><use href="#i-sparkle"/></svg></span><span>手势放映室<span class="brand-en">GESTURE STUDIO</span></span></a>
+      <div class="header-right"><span class="local-label"><span class="status-dot"></span> 灵感在手边</span><button class="help-button" id="helpButton"><svg><use href="#i-info"/></svg> 使用指南</button></div>
+    </header>
+    <main>
+      <section class="intro">
+        <div><div class="eyebrow"><span></span> A LITTLE GESTURE. A LITTLE MAGIC.</div><h1>心动，只需一个<span class="accent-word">手势<svg viewBox="0 0 140 12"><path d="M3 8Q63-2 137 5"/></svg></span>。</h1><p>把想说的话，变成满屏的小惊喜。</p></div>
+        <div class="intro-note"><span class="mini-stars">✧</span><div>举起手，让魔法发生<span>无需下载，即刻开玩</span></div></div>
+      </section>
+
+      <div class="workspace">
+        <section class="studio" aria-label="摄像头与特效工作区">
+          <div class="stage" id="stage">
+            <video id="video" autoplay muted playsinline aria-label="摄像头实时画面"></video>
+            <div class="stage-texture"></div>
+            <canvas id="effects" aria-label="动态特效画布"></canvas>
+            <canvas id="landmarks" aria-hidden="true"></canvas>
+            <div class="stage-top"><span class="stage-mode" id="modeBadge"><span></span> 你的魔法主场</span><button class="stage-icon" id="fullscreenButton" aria-label="全屏预览" title="全屏预览"><svg><use href="#i-expand"/></svg></button></div>
+            <div class="idle-content" id="idleContent">
+              <div class="magic-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="glow"></div><div class="glossy-heart"><svg viewBox="0 0 200 180"><defs><linearGradient id="heartGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffc5df"/><stop offset=".34" stop-color="#fa83bb"/><stop offset=".7" stop-color="#e45193"/><stop offset="1" stop-color="#862f77"/></linearGradient><radialGradient id="heartLight" cx=".3" cy=".2" r=".8"><stop stop-color="#fff" stop-opacity=".9"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><path d="M100 163C79 148 17 109 17 65C17 15 76 11 100 46C124 11 183 15 183 65C183 109 121 148 100 163Z" fill="url(#heartGrad)"/><path d="M100 163C79 148 17 109 17 65C17 15 76 11 100 46C124 11 183 15 183 65C183 109 121 148 100 163Z" fill="url(#heartLight)" opacity=".4"/><path d="M36 65c-1-17 11-28 28-26" fill="none" stroke="#fff0f8" stroke-width="7" stroke-linecap="round" opacity=".7"/></svg></div><span class="art-spark spark-one">✦</span><span class="art-spark spark-two">✧</span><span class="art-spark spark-three">✦</span><div class="little-orb"></div><div class="art-tag tag-one">🫶 <span>传递一点爱</span></div><div class="art-tag tag-two">✌️ <span>接住快乐</span></div></div>
+              <h2>你的每个手势，都有回应</h2><p>开启摄像头，试试对着镜头比个耶</p>
+              <button class="primary-button" id="startHero"><svg><use href="#i-camera"/></svg> 开启摄像头 <svg class="arrow"><use href="#i-arrow"/></svg></button>
+              <button class="demo-button" id="demoButton">先看看特效 <span>↗</span></button>
+            </div>
+            <div class="camera-message" id="cameraMessage" role="status" hidden><span class="spinner"></span><span id="cameraMessageText">正在准备手势识别…</span></div>
+            <div class="reaction-label" id="reactionLabel" role="status"></div>
+            <div class="recognition" id="recognition" hidden><span class="recognition-icon" id="recognitionIcon">✧</span><div><strong id="recognitionTitle">等待你的手势</strong><span id="recognitionSubtitle">让双手完整进入画面</span></div><div class="hold-track"><i id="holdProgress"></i></div></div>
+            <div class="stage-bottom" id="stageBottom"><span><i></i> 小小手势，大大惊喜</span><span>MADE FOR YOUR MOMENTS</span></div>
+          </div>
+          <div class="toolbar"><div class="toolbar-left"><button class="camera-control" id="cameraButton"><svg><use href="#i-camera"/></svg><span id="cameraButtonText">开启摄像头</span></button><span class="toolbar-divider"></span><button class="tool-button active" id="mirrorButton" aria-pressed="true" title="镜像画面"><svg><use href="#i-mirror"/></svg><span>镜像</span></button><button class="tool-button" id="skeletonButton" aria-pressed="false" title="显示手部骨架"><svg><use href="#i-hand"/></svg><span>骨架</span></button></div><div class="toolbar-right"><button class="tool-button" id="soundButton" aria-pressed="false" title="开启特效音效"><svg><use href="#i-sound"/></svg><span>音效</span><i class="sound-slash"></i></button><button class="tool-button" id="captureButton" title="保存当前画面"><svg><use href="#i-capture"/></svg><span>拍照</span></button></div></div>
+          <div class="privacy-line"><svg><use href="#i-shield"/></svg> 画面只留在你的设备上，安心表达每一个瞬间。</div>
+        </section>
+
+        <aside class="reactions-panel">
+          <div class="panel-heading"><div class="eyebrow">THE REACTION COLLECTION</div><h2>给情绪，加点特效<span>8</span></h2><p>保持手势约 1 秒，惊喜就会出现。</p></div>
+          <div class="reaction-grid" id="reactionGrid">
+            <button class="reaction-card" data-effect="hearts" style="--tile:#fcecf1;--ink:#c97694"><span class="card-emoji">🫶</span><span class="card-title">爱意满屏</span><span class="card-gesture">双手比心</span><span class="card-preview">↗</span></button>
+            <button class="reaction-card" data-effect="balloons" style="--tile:#eeeafb;--ink:#8a78bb"><span class="card-emoji">✌️</span><span class="card-title">快乐起飞</span><span class="card-gesture">单手比耶</span><span class="card-preview">↗</span></button>
+            <button class="reaction-card" data-effect="like" style="--tile:#edf2e4;--ink:#7d9460"><span class="card-emoji">👍</span><span class="card-title">给你点赞</span><span class="card-gesture">单手点赞</span><span class="card-preview">↗</span></button>
+            <button class="reaction-card" data-effect="confetti" style="--tile:#fff2da;--ink:#b89a5b"><span class="card-emoji double">✌️✌️</span><span class="card-title">值得庆祝</span><span class="card-gesture">双手比耶</span><span class="card-preview">↗</span></button>
+            <button class="reaction-card" data-effect="fireworks" style="--tile:#f9eae2;--ink:#c48e72"><span class="card-emoji double">👍👍</span><span class="card-title">为你放烟花</span><span class="card-gesture">双手点赞</span><span class="card-preview">↗</span></button>
+            <button class="reaction-card" data-effect="rain" style="--tile:#e7eef5;--ink:#7d97b6"><span class="card-emoji">👎</span><span class="card-title">小小情绪雨</span><span class="card-gesture">单手倒赞</span><span class="card-preview">↗</span></button>
+            <button class="reaction-card" data-effect="lasers" style="--tile:#efe9f6;--ink:#a17bb5"><span class="card-emoji">🤟</span><span class="card-title">闪耀时刻</span><span class="card-gesture">我爱你手势</span><span class="card-preview">↗</span></button>
+            <button class="reaction-card" data-effect="stars" style="--tile:#e7f2ed;--ink:#71a293"><span class="card-emoji">🖐️</span><span class="card-title">星光问候</span><span class="card-gesture">张开手掌</span><span class="card-preview">↗</span></button>
+          </div>
+          <div class="preview-note"><svg><use href="#i-sparkle"/></svg><span>也可以点选卡片，直接预览特效</span></div>
+        </aside>
+      </div>
+
+      <section class="quick-tips" aria-label="使用小贴士"><div class="tip-label">魔法小贴士 <span>↘</span></div><div><span class="tip-number">01</span><p>找个明亮的角落<span>光线充足，识别更灵敏</span></p></div><div><span class="tip-number">02</span><p>给双手一点空间<span>距离镜头约半米，完整入镜</span></p></div><div><span class="tip-number">03</span><p>让快乐稍作停留<span>触发后放下手，即可再次施法</span></p></div></section>
+    </main>
+    <footer><span>GESTURE STUDIO <i>✳</i> 让表达多一点想象</span><span>灵感源于视频通话中的手势回应</span></footer>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <dialog id="helpDialog"><div class="dialog-heading"><span class="brand-mark"><svg><use href="#i-sparkle"/></svg></span><button class="close-button" id="closeHelp" aria-label="关闭指南"><svg><use href="#i-close"/></svg></button></div><div class="eyebrow">LET THE MAGIC BEGIN</div><h2>手势，是快乐的开关。</h2><p>点击「开启摄像头」，允许浏览器使用前置摄像头。将手完整放入画面，保持卡片上的姿势约 1 秒。</p><div class="help-steps"><div><b>🫶</b><span><strong>双手比心怎么做？</strong>双手食指弯成心形顶部，拇指在下方相接。将指尖靠拢，心形正对镜头。</span></div><div><b>🤟</b><span><strong>闪耀时刻怎么做？</strong>伸出拇指、食指和小指，收起中指与无名指。</span></div><div><b>↻</b><span><strong>再触发一次</strong>触发特效后先放下手，再重新摆出手势。双手手势优先于单手手势。</span></div></div><p class="help-small">摄像头画面与手势识别都在本机处理，不会上传。此网页是独立的手势特效体验；在微信等内置浏览器中如无法使用摄像头，请用系统浏览器打开。拍照只保存当前画面，不录制视频。</p><button class="primary-button" id="gotIt">知道了，开始施法 <svg><use href="#i-arrow"/></svg></button></dialog>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
